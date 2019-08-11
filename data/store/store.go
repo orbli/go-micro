@@ -3,7 +3,7 @@ package store
 
 import (
 	"errors"
-	"time"
+	"encoding"
 
 	"github.com/micro/go-micro/config/options"
 )
@@ -17,18 +17,18 @@ type Store interface {
 	// embed options
 	options.Options
 	// Dump the known records
-	Dump() ([]*Record, error)
+	Dump() ([]Record, error)
 	// Read a record with key
-	Read(key string) (*Record, error)
+	Read(key string) (Record, error)
 	// Write a record
-	Write(r *Record) error
+	Write(r Record) error
 	// Delete a record with key
 	Delete(key string) error
 }
 
 // Record represents a data record
-type Record struct {
-	Key    string
-	Value  []byte
-	Expiry time.Duration
+type Record interface {
+	encoding.BinaryMarshaler
+	encoding.BinaryUnmarshaler
+	Key() string
 }
